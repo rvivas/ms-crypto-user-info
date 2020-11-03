@@ -1,5 +1,5 @@
 require('./src/config/config');
-const cors = required('cors');
+const cors = require('cors');
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
