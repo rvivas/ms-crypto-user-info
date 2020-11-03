@@ -11,7 +11,8 @@ const corsOptions = {
 };
 const app = express();
 
-app.get('/login', cors(corsOptions), (req, res) => {
+app.post('/login', cors(corsOptions), (req, res) => {
+  console.log(req);
   let { username, password } = req.body;
 
   UserInfo.findOne({ username }, (err, userDB) => {
