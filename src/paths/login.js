@@ -2,10 +2,16 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const cors = require('cors');
 const UserInfo = require('../models/user');
-
+const corsOptions = {
+  origin: '*',
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+  allowedHeaders: '*',
+};
 const app = express();
 
-app.get('/login', cors(), (req, res) => {
+app.get('/login', cors(corsOptions), (req, res) => {
   let { username, password } = req.body;
 
   UserInfo.findOne({ username }, (err, userDB) => {
