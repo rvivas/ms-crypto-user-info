@@ -1,39 +1,38 @@
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 
-
 let Schema = mongoose.Schema;
 
-
-let userInfoSchema = new Schema ({
+let userInfoSchema = new Schema(
+  {
     name: {
       type: String,
     },
     password: {
-     type: String,
+      type: String,
     },
     username: {
-      type: String
+      type: String,
     },
     balance: {
-      type: Number
+      type: Number,
     },
     country: {
-     type: String
-    }
-    
-},{collection: 'user'});
+      type: String,
+    },
+    key: {
+      type: String,
+    },
+  },
+  { collection: 'user' }
+);
 
-userInfoSchema.methods.toJSON = function() {
+userInfoSchema.methods.toJSON = function () {
+  let user = this;
+  let userObject = user.toObject();
+  delete userObject.password;
 
-    let user = this;
-    let userObject = user.toObject();
-    delete userObject.password;
-
-    return userObject;
-}
-const UserInfo = mongoose.model('user',userInfoSchema);
-module.exports = UserInfo
-
-
-
+  return userObject;
+};
+const UserInfo = mongoose.model('user', userInfoSchema);
+module.exports = UserInfo;

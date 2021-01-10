@@ -2,52 +2,39 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const cors = require('cors');
 const UserInfo = require('../models/user');
-const corsOptions = {
-  origin: '*',
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  preflightContinue: false,
-  optionsSuccessStatus: 204,
-  allowedHeaders: '*',
-};
 const app = express();
 
-app.post('/login', cors(corsOptions), (req, res) => {
-  console.log(req);
-  let { username, password } = req.body;
-
-  UserInfo.findOne({ username }, (err, userDB) => {
-    if (err) {
-      return res.status(500).json({
-        ok: false,
-        err,
-      });
-    }
-    console.log(userDB);
-    if (!userDB) {
+app.post('/login', cors(), async (req, res) => {
+  try {
+    let { username, password } = req.body;
+    const resultUser = await UserInfo.findOne({ username });
+    console.log(resultUser);
+    if (!resultUser) {
       console.log('info no encontrada');
-      return res.status(400).json({
+      return res.status(404).json({
         ok: false,
-        err: {
-          message: 'Invalid user or credentials',
-        },
+        message: 'Invalid user or credentials',
       });
     }
-    console.log('usuario encontrado');
-    if (!bcrypt.compare(password, userDB.password)) {
+    if (!bcrypt.compare(password, resultUser.password)) {
       console.log('password invalido');
 
-      return res.status(400).json({
+      return res.status(404).json({
         ok: false,
-        err: {
-          message: 'Invalid user or credentials',
-        },
+        message: 'Invalid user or credentials',
       });
     }
-    res.json({
+    return res.status(200).json({
       ok: true,
-      usuario: userDB,
+      usuario: resultUser,
     });
-  });
+  } catch (error) {
+    console.log('Error', error);
+    return res.status(500).json({
+      ok: false,
+      message: error,
+    });
+  }
 });
 
 module.exports = app;
